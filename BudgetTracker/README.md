@@ -1,139 +1,70 @@
-# Budget Tracker App — Kotlin / Android
+# BudgetTracker - Personal Finance App
 
-## Project Structure
+## Student Information
+- **Student Number:** ST10177115
+- **Module:** OPSC7312
+- **Part:** 3 - Final App Development
 
-```
-app/src/main/
-├── AndroidManifest.xml
-├── java/com/budgettracker/
-│   ├── data/
-│   │   ├── entities/        # Room @Entity data classes
-│   │   │   ├── User.kt
-│   │   │   ├── Category.kt
-│   │   │   ├── Expense.kt
-│   │   │   └── ExpenseWithCategory.kt   (joined query result + CategoryTotal)
-│   │   ├── dao/             # Room @Dao interfaces
-│   │   │   ├── UserDao.kt
-│   │   │   ├── CategoryDao.kt
-│   │   │   └── ExpenseDao.kt
-│   │   └── database/
-│   │       └── AppDatabase.kt           (singleton Room DB)
-│   ├── ui/
-│   │   ├── activities/
-│   │   │   ├── LoginActivity.kt         # Login + Register
-│   │   │   ├── MainActivity.kt          # Dashboard
-│   │   │   ├── AddExpenseActivity.kt    # Create expense + photo
-│   │   │   ├── AddCategoryActivity.kt   # Create / delete categories
-│   │   │   ├── ExpenseListActivity.kt   # List with date-range filter
-│   │   │   ├── CategoryReportActivity.kt# Spending totals by category
-│   │   │   ├── GoalSettingsActivity.kt  # SeekBar min/max goals
-│   │   │   └── ExpenseDetailActivity.kt # Full detail + photo view
-│   │   └── adapters/
-│   │       ├── ExpenseAdapter.kt
-│   │       ├── CategoryAdapter.kt
-│   │       └── CategoryReportAdapter.kt
-│   └── utils/
-│       ├── SessionManager.kt    # SharedPreferences login session
-│       └── DateUtils.kt         # Date/time formatting helpers
-└── res/
-    ├── layout/          # All XML layouts
-    ├── values/          # colors, strings, themes
-    ├── drawable/        # Vector icons + shape drawables
-    └── xml/file_paths.xml   # FileProvider paths for camera
-```
+## App Overview
+BudgetTracker is an Android application that helps users track their daily expenses, manage budgets, and achieve their financial goals through gamification and visual insights.
 
-## Setup in Android Studio
+## Features
 
-1. **Open** Android Studio → File → Open → select the `BudgetTracker` folder.
-2. Wait for Gradle sync to finish (requires internet for dependency download).
-3. **Run** on an emulator (API 24+) or physical device.
+### Core Features
+- **User Authentication** - Secure login and registration
+- **Expense Tracking** - Add, view, and manage expenses with categories
+- **Category Management** - Create and manage expense categories
+- **Goal Setting** - Set minimum and maximum monthly spending goals
 
-### Required SDK
-- **minSdk**: 24 (Android 7.0)
-- **targetSdk**: 34 (Android 14)
-- **Kotlin**: 1.9.10
-- **KSP**: 1.9.10-1.0.13 (for Room annotation processing)
+### Part 3 New Features
+- **Spending Graph** - Visual bar chart showing amount spent per category with minimum and maximum goal lines over a user-selectable period
+- **Budget Progress** - Visual progress bar showing how well the user is staying within their spending goals
+- **Gamification (Badges)** - Earn badges and rewards for meeting budget goals and consistent expense logging
 
-### Key Dependencies
-| Library | Purpose |
-|---|---|
-| Room 2.6.1 | Local SQLite database (RoomDB) |
-| Glide 4.16 | Loading expense photos |
-| Material Components 1.11 | UI components (TextInputLayout, Buttons, Cards) |
-| Lifecycle / LiveData 2.7 | Reactive UI updates |
-| Coroutines | Background DB operations |
+### Own Features
+1. **Budget Tips** - Personalised financial tips based on the user's current spending patterns and goals
+2. **Monthly Summary** - A breakdown of total spending over the last 6 months to track progress over time
 
----
+## Screenshots
+(Add screenshots of your app here)
 
-## Features Implemented
+## Video Demonstration
+[Click here to watch the demo video](#)
+(Replace # with your YouTube link)
 
-### ✅ Login / Register
-- `LoginActivity` handles both modes.
-- Username uniqueness validated before registration.
-- Passwords stored in RoomDB (extend with hashing for production use).
-- `SessionManager` (SharedPreferences) persists login across app restarts.
+## GitHub Actions
+This project uses GitHub Actions for automated building and testing. The workflow:
+- Triggers on every push to main branch
+- Sets up JDK 17
+- Builds the debug APK automatically
+- Uploads the APK as a build artifact
 
-### ✅ Categories
-- `AddCategoryActivity` — create named categories with a colour.
-- `CategoryAdapter` — lists existing categories with delete button.
-- Categories are user-scoped (foreign key → `users.id`).
+## Technical Details
+- **Language:** Kotlin
+- **Minimum SDK:** 24 (Android 7.0)
+- **Target SDK:** 34 (Android 14)
+- **Database:** Room (SQLite)
+- **Architecture:** MVVM (ViewModel + LiveData)
+- **Libraries Used:**
+  - MPAndroidChart - for bar charts and graphs
+  - Lottie - for animations
+  - Room - for local database
+  - Glide - for image loading
+  - Material Design Components
 
-### ✅ Expense Entry
-- `AddExpenseActivity` collects:
-  - **Date** — `DatePickerDialog`
-  - **Start & End time** — `TimePickerDialog` (validates end ≥ start)
-  - **Description** — `TextInputEditText` with error handling
-  - **Amount** — `NumberDecimal` input with `R ` prefix
-  - **Category** — `Spinner` populated from LiveData
-  - **Photo** — Camera (`TakePicture`) or Gallery (`GetContent`), stored to external files dir via `FileProvider`
+## How to Run
+1. Clone the repository
+2. Open in Android Studio
+3. Sync Gradle files
+4. Run on an Android device or emulator (API 24+)
 
-### ✅ Expense List with Date Range
-- `ExpenseListActivity` — user selects start/end date via `DatePickerDialog`.
-- Shows running total for the period.
-- Camera icon indicates entries with a photo.
-- Tapping an entry opens `ExpenseDetailActivity` (photo + full details).
+## Design Considerations
+- Clean and intuitive user interface
+- Material Design principles
+- Color-coded feedback for budget status
+- Responsive layout for different screen sizes
 
-### ✅ Category Report
-- `CategoryReportActivity` — same date-range selector.
-- Shows each category's total + percentage bar (`ProgressBar`).
-- Grand total displayed at the top.
-
-### ✅ Monthly Goals with SeekBar
-- `GoalSettingsActivity` — dual `SeekBar` controls (0–R10,000 in R50 steps).
-- Text inputs allow typing an exact value.
-- Min/max saved back to the `users` table via Room.
-- Dashboard shows live status: on track / over budget / below minimum.
-
-### ✅ RoomDB Persistence
-- Single `AppDatabase` singleton with three tables: `users`, `categories`, `expenses`.
-- All queries return `LiveData` for reactive UI.
-- Background operations run in coroutine `lifecycleScope`.
-
----
-
-## Extending the App
-
-### Add password hashing
-In `LoginActivity.performRegister`, replace plain text with:
-```kotlin
-import java.security.MessageDigest
-fun hashPassword(password: String): String {
-    val bytes = MessageDigest.getInstance("SHA-256").digest(password.toByteArray())
-    return bytes.joinToString("") { "%02x".format(it) }
-}
-```
-Then compare hashes in `UserDao.login`.
-
-### Add expense editing
-Pass `expense_id` to `AddExpenseActivity`, pre-populate fields, and call `updateExpense()` instead of `insertExpense()`.
-
-### Add database migrations
-When changing entities, increment `version` in `AppDatabase` and add a `Migration` object:
-```kotlin
-val MIGRATION_1_2 = object : Migration(1, 2) {
-    override fun migrate(database: SupportSQLiteDatabase) {
-        database.execSQL("ALTER TABLE expenses ADD COLUMN notes TEXT")
-    }
-}
-Room.databaseBuilder(...).addMigrations(MIGRATION_1_2).build()
-```
+## References
+- MPAndroidChart: https://github.com/PhilJay/MPAndroidChart
+- Android Room Documentation: https://developer.android.com/training/data-storage/room
+- GitHub Actions for Android: https://github.com/marketplace/actions/automated-build-android-app-with-github-action
