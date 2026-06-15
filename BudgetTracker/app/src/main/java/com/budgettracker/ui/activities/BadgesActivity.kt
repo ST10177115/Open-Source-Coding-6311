@@ -160,4 +160,25 @@ class BadgesActivity : AppCompatActivity() {
                 text = badge.description
                 textSize = 13f
                 setTextColor(
-                    if (badge.isEarned)
+                    if (badge.isEarned) Color.parseColor("#555555")
+                    else Color.parseColor("#9E9E9E")
+                )
+            }
+
+            textLayout.addView(title)
+            textLayout.addView(desc)
+            row.addView(emoji)
+            row.addView(textLayout)
+            card.addView(row)
+            binding.badgesContainer.addView(card)
+        }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == android.R.id.home) {
+            onBackPressed()
+            return true
+        }
+        return super.onOptionsItemSelected(item)
+    }
+}
